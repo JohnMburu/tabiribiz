@@ -1,0 +1,12 @@
+name: tabiriApp
+title: tabiriApp
+username:
+account: tabiri
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2381892
+bundleId: 3208196
+url: https://tabiri.shinyapps.io/tabiriApp/
+when: 1590853170.49799
+asMultiple: FALSE
+asStatic: FALSE
