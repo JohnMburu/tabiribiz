@@ -1,5 +1,5 @@
 ## Tabiri Biashara
-## www.tabiri.biz
+## https://tabiri.shinyapps.io/tabiriApp/
 
 #Pre requisities
 - R
