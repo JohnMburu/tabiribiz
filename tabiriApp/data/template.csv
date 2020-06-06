@@ -1,0 +1,61 @@
+Custom_Category,Date ,Sales,Sale_Refunds,Purchases,Purchase_cancelation,Location,Service,Company size,Category
+Store A,1-Apr-20,0,1,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,2-Apr-20,0,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,3-Apr-20,2,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,4-Apr-20,33,3,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,5-Apr-20,0,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,6-Apr-20,12,2,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,7-Apr-20,1,1,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,8-Apr-20,13,2,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,9-Apr-20,11,0,28,1,Rural & Urban,Goods & Services,50,Energy
+Store A,10-Apr-20,7,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,11-Apr-20,7,1,35,0,Rural & Urban,Goods & Services,50,Energy
+Store A,12-Apr-20,18,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,13-Apr-20,1,1,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,14-Apr-20,33,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,15-Apr-20,3,0,8,0,Rural & Urban,Goods & Services,50,Energy
+Store A,16-Apr-20,3,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,17-Apr-20,3,1,3,0,Rural & Urban,Goods & Services,50,Energy
+Store A,18-Apr-20,2,1,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,19-Apr-20,2,0,0,12,Rural & Urban,Goods & Services,50,Energy
+Store A,20-Apr-20,12,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,21-Apr-20,0,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,22-Apr-20,8,0,3,0,Rural & Urban,Goods & Services,50,Energy
+Store A,23-Apr-20,3,1,7,0,Rural & Urban,Goods & Services,50,Energy
+Store A,24-Apr-20,1,1,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,25-Apr-20,34,1,6,0,Rural & Urban,Goods & Services,50,Energy
+Store A,26-Apr-20,0,3,5,0,Rural & Urban,Goods & Services,50,Energy
+Store A,27-Apr-20,6,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store A,28-Apr-20,8,1,4,0,Rural & Urban,Goods & Services,50,Energy
+Store A,29-Apr-20,9,0,0,0,Rural & Urban,Goods & Services,50,Energy
+Store B,30-Apr-20,7,2,6,0,Rural & Urban,Goods & Services,50,Energy
+Store B,1-Apr-20,6,0,0,0,Rural,Services,60,Information Technology
+Store B,2-Apr-20,3,0,3,0,Rural,Services,60,Information Technology
+Store B,3-Apr-20,2,0,0,14,Rural,Services,60,Information Technology
+Store B,4-Apr-20,0,0,0,0,Rural,Services,60,Information Technology
+Store B,5-Apr-20,66,0,0,0,Rural,Services,60,Information Technology
+Store B,6-Apr-20,1,0,5,5,Rural,Services,60,Information Technology
+Store B,7-Apr-20,1,0,0,3,Rural,Services,60,Information Technology
+Store B,8-Apr-20,13,0,0,0,Rural,Services,60,Information Technology
+Store B,9-Apr-20,11,0,6,0,Rural,Services,60,Information Technology
+Store B,10-Apr-20,0,0,0,0,Rural,Services,60,Information Technology
+Store B,11-Apr-20,2,0,6,0,Rural,Services,60,Information Technology
+Store B,12-Apr-20,7,0,0,0,Rural,Services,60,Information Technology
+Store B,13-Apr-20,1,0,0,0,Rural,Services,60,Information Technology
+Store B,14-Apr-20,0,0,0,0,Rural,Services,60,Information Technology
+Store B,15-Apr-20,3,0,8,0,Rural,Services,60,Information Technology
+Store B,16-Apr-20,3,0,0,0,Rural,Services,60,Information Technology
+Store B,17-Apr-20,3,0,54,0,Rural,Services,60,Information Technology
+Store B,18-Apr-20,2,0,0,22,Rural,Services,60,Information Technology
+Store B,19-Apr-20,7,0,0,0,Rural,Services,60,Information Technology
+Store B,20-Apr-20,1,0,0,0,Rural,Services,60,Information Technology
+Store B,21-Apr-20,0,0,0,1,Rural,Services,60,Information Technology
+Store B,22-Apr-20,8,0,12,0,Rural,Services,60,Information Technology
+Store B,23-Apr-20,3,0,0,4,Rural,Services,60,Information Technology
+Store B,24-Apr-20,1,0,0,0,Rural,Services,60,Information Technology
+Store B,25-Apr-20,2,0,0,2,Rural,Services,60,Information Technology
+Store B,26-Apr-20,0,0,0,0,Rural,Services,60,Information Technology
+Store B,27-Apr-20,0,0,0,0,Rural,Services,60,Information Technology
+Store B,28-Apr-20,8,0,4,6,Rural,Services,60,Information Technology
+Store B,29-Apr-20,0,0,18,0,Rural,Services,60,Information Technology
+Store B,30-Apr-20,7,0,0,3,Rural,Services,60,Information Technology
