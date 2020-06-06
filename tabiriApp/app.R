@@ -51,7 +51,7 @@ ui <- fluidPage(
       selectInput(
         "plot",
         "Chose your desired plot type:",
-        c("autoplot","Area Plot","Scatter Plot","Regression Line")),
+        c("Trend Line  (with Smoothened trend line)","Area Plot","Scatter Plot","Regression Line")),
       
       selectInput(
         "fplot",
@@ -183,7 +183,7 @@ server <- function(input, output,session) {
     if (input$forecast_item == 'sales'){
       Sales_Quantities <- ts_Sales()
       print(Sales_Quantities)
-      if (input$plot == 'autoplot') {
+      if (input$plot == 'Trend Line  (with Smoothened trend line)') {
         
         p <- ggplot(data(), aes(x = Date, y = Sales)) + 
           geom_line(color = "#00AFBB", size = 1)
@@ -220,8 +220,18 @@ server <- function(input, output,session) {
     else if (input$forecast_item == 'sale_refunds'){
       Refund_Quantities <- ts_Sale_Refunds()
       print(Refund_Quantities)
-      if (input$plot == 'autoplot') {
-        autoplot(Refund_Quantities)
+      if (input$plot == 'Trend Line  (with Smoothened trend line)') {
+        
+        
+        p <- ggplot(data(), aes(x = Date, y = Sale_Refunds)) + 
+          geom_line(color = "#00AFBB", size = 1)
+        p
+        
+        p + stat_smooth(
+          color = "#FC4E07", fill = "#FC4E07",
+          method = "loess")
+        
+        
       }
       else if(input$plot == 'Area Plot'){
         # Area plot
@@ -248,16 +258,14 @@ server <- function(input, output,session) {
     else if (input$forecast_item == 'purchases'){
       Purchase_Quantities <- ts_Purchases()
       print(Purchase_Quantities)
-      if (input$plot == 'autoplot') {
-        #autoplot(Purchase_Quantities)
+      if (input$plot == 'Trend Line  (with Smoothened trend line)') {
         p <- ggplot(data(), aes(x = Date, y = Purchases)) + 
           geom_line(color = "#00AFBB", size = 1)
+        p
         
-        
-        
-        
-        
-        
+        p + stat_smooth(
+          color = "#FC4E07", fill = "#FC4E07",
+          method = "loess")
       }
       else if(input$plot == 'Area Plot'){
         # Area plot
@@ -284,8 +292,14 @@ server <- function(input, output,session) {
     else if (input$forecast_item == 'purchase_cancelation'){
       Cancelled_POs_Quantities <- ts_Purchase_cancelation()
       print(Cancelled_POs_Quantities)
-      if (input$plot == 'autoplot') {
-        autoplot(Cancelled_POs_Quantities)
+      if (input$plot == 'Trend Line  (with Smoothened trend line)') {
+        p <- ggplot(data(), aes(x = Date, y = Purchase_cancelation)) + 
+          geom_line(color = "#00AFBB", size = 1)
+        p
+        
+        p + stat_smooth(
+          color = "#FC4E07", fill = "#FC4E07",
+          method = "loess")
       }
       else if(input$plot == 'Area Plot'){
         # Area plot
