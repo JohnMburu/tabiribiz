@@ -41,8 +41,7 @@ ui <- fluidPage(
                 )
       ),
       
-      
-      hr(),
+    # SELECT FORECAST OPTIONS
       selectInput("forecast_item", "Select what to forecast:",
                   choices =  c(
                     "Sales" = "sales",
@@ -50,25 +49,7 @@ ui <- fluidPage(
                     "Purchases" = "purchases",
                     "Cancelled POs" = "purchase_cancelation", selected = NULL)),
       
-      
-      selectInput(
-        "plot",
-        "Chose your desired plot type:",
-        c("Trend Line  (with Smoothened trend line)","Area Plot","Scatter Plot","Regression Line")),
-      
-      selectInput(
-        "fplot",
-        "Chose a Forecast algorithm:",
-        c("seasonal naive","snaive","Simple Expotential Smoothing")),
-      # SLIDER. NUMBER OF DAYS TO FORECAST
-      sliderInput("forecast_days",
-                  "Number of Days to Forecast:",
-                  value = 14,
-                  min = 2,
-                  max = 31),
-      
       #Allow users to Drill down using custom categorization column [this column can be used to identify products or outlets]
-      hr(),
       radioButtons("drill", "Do You Want to Enable use of Custom Categorization?",
                    choices = c(
                      "No" = "no",
@@ -88,37 +69,64 @@ ui <- fluidPage(
         "service",
         "By Service Type",
         "choices"),
-      tags$hr(),
-      #Input: Select number of rows to display ----
-      radioButtons("disp", "Display",
-                   choices = c(Head = "head",
-                               All = "all"),
-                   selected = "head"),
-      # Input: Select separator ----
-      radioButtons("sep", "Separator",
-                   choices = c(Comma = ",",
-                               Semicolon = ";",
-                               Tab = "\t"),
-                   selected = ","),
-      
-      # Input: Select quotes ----
-      radioButtons("quote", "Quote",
-                   choices = c(None = "",
-                               "Double Quote" = '"',
-                               "Single Quote" = "'"),
-                   selected = '"') 
+      tags$hr()
       
       
     ),
     mainPanel(
       tabsetPanel(
-        tabPanel("Forecast",plotOutput("forecast_view")),
-        tabPanel("Graphs",plotOutput("graphs_view")),
+        #Forecat Tab
+        tabPanel("Forecast",plotOutput("forecast_view"),
+                 
+                 selectInput(
+                   "fplot",
+                   "Chose a Forecast algorithm:",
+                   c("seasonal naive","snaive","Simple Expotential Smoothing")),
+                 # SLIDER. NUMBER OF DAYS TO FORECAST
+                 sliderInput("forecast_days",
+                             "Number of Days to Forecast:",
+                             value = 14,
+                             min = 2,
+                             max = 31)
+                 
+                 ),
+        
+        # Graph Tab
+        tabPanel("Graphs",plotOutput("graphs_view"),
+                 selectInput(
+                   "plot",
+                   "Chose your desired plot type:",
+                   c("Trend Line  (with Smoothened trend line)","Area Plot","Scatter Plot","Regression Line"))
+                 
+                 ),
         tabPanel("Summary",
                  tags$div(class="header",align="center"),
                  h3(textOutput("caption")),
                  verbatimTextOutput("summary")),
-        tabPanel("Uploaded Dataset",dataTableOutput("data_set"))
+        tabPanel("Dataset",dataTableOutput("data_set"),
+                 
+                 #Input: Select number of rows to display ----
+                 radioButtons("disp", "Display",
+                              choices = c(Head = "head",
+                                          All = "all"),
+                              selected = "head"),
+                 # Input: Select separator ----
+                 radioButtons("sep", "Separator",
+                              choices = c(Comma = ",",
+                                          Semicolon = ";",
+                                          Tab = "\t"),
+                              selected = ","),
+                 
+                 # Input: Select quotes ----
+                 radioButtons("quote", "Quote",
+                              choices = c(None = "",
+                                          "Double Quote" = '"',
+                                          "Single Quote" = "'"),
+                              selected = '"') 
+                 
+                 
+                 
+                 )
         
         
       )
@@ -129,7 +137,7 @@ ui <- fluidPage(
 # ***********************************************************************************#
 
 server <- function(input, output,session) {
-  #Read Dataset
+  #Read Uploaded dataset Logic
   
   dataset2 <- reactive({
     if (stringr::str_detect(input$file1, "\\.csv")){
@@ -145,22 +153,28 @@ server <- function(input, output,session) {
     }
   })
   
-
-
   
-  
-
+  mydata <- reactive({
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    
+    data <-read.csv(file = inFile$datapath)
+    data$Date <- as.Date(paste(data$Date, sep = ""), format = "%d-%b-%y")
+    
+      return(data)
+    data
+    
+    
+    
+  })
   
   dataset <- read.csv(file = './data/template.csv')
   dataset$Date <- as.Date(paste(dataset$Date, sep = ""), format = "%d-%b-%y")
   
-  observe({
-    updateSelectInput(session, "item", choices = unique(dataset$Custom_Category))
-    updateSelectInput(session, "location", choices = unique(dataset$Location))
-    updateSelectInput(session, "service", choices = unique(dataset$Service))
-  })
- 
-  
+
+  # Data Preparation Logic
+  # This logic Allows users to drill down using the Custom category, Location and Service offered by SMES 
   data <- reactive({
     if (input$drill == 'yes'){
       itemdata_sr <- subset(dataset,Custom_Category==input$item)
@@ -171,10 +185,19 @@ server <- function(input, output,session) {
     } else {
       itemdata <- subset(dataset)
       return(itemdata)
+      itemdata
     }
     
     
   })
+  
+  # Update Inputs with data from the uploaded file
+  observe({
+    updateSelectInput(session, "item", choices = unique(dataset$Custom_Category))
+    updateSelectInput(session, "location", choices = unique(dataset$Location))
+    updateSelectInput(session, "service", choices = unique(dataset$Service))
+  })
+  
   
   #DECLARE TIME SERIES DATA
   #sALES
@@ -375,7 +398,9 @@ server <- function(input, output,session) {
     if (input$forecast_item == 'sales'){
       SALES_QUANTITIES <- ts_Sales()
       if (input$fplot == 'seasonal naive'){
-        fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
+        fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
+        
+        
         autoplot(fcnv)
       }
       else if(input$fplot=='snaive'){
@@ -444,7 +469,6 @@ server <- function(input, output,session) {
   output$data_set <- DT::renderDataTable({
     
     DT::datatable(data())   
-    
     
   })
   
