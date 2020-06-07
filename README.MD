@@ -5,7 +5,7 @@
 - R
 - Rstudio
 
-# install Required Packages
+# Required Packages
 library(shiny)
 require(gridExtra)
 library(datasets)
@@ -29,8 +29,8 @@ TabiriApp
     .RData
 
 
-##Architecure
-
+## Architecure
+```
 app.R
     ui
         - Download Template .xlx/csv
@@ -47,4 +47,4 @@ app.R
         - Dataset
     shinyapp
     
-
+```
