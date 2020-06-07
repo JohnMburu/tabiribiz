@@ -12,9 +12,10 @@ library(datasets)
 library(fpp2)
 library(ggplot2)
 library(shinythemes)
-
+library(DT)
 library(tidyr)
 library(dplyr)
+library(readxl)
 
 # ***********************************************************************************#
 # User Interface 
@@ -32,9 +33,11 @@ ui <- fluidPage(
       tags$a(href='./data/template.csv', target='blank', 'Download the Template to use for Prediction', download = 'template.csv'),
       
       #FILE INPUT
-      fileInput('upfile', 'Choose file to upload',
+      fileInput('file1', 'Choose file to upload',
                 accept = c(
-                  '.csv'
+                  '.csv',
+                  '.xls',
+                  '.xlsx'
                 )
       ),
       
@@ -85,6 +88,25 @@ ui <- fluidPage(
         "service",
         "By Service Type",
         "choices"),
+      tags$hr(),
+      #Input: Select number of rows to display ----
+      radioButtons("disp", "Display",
+                   choices = c(Head = "head",
+                               All = "all"),
+                   selected = "head"),
+      # Input: Select separator ----
+      radioButtons("sep", "Separator",
+                   choices = c(Comma = ",",
+                               Semicolon = ";",
+                               Tab = "\t"),
+                   selected = ","),
+      
+      # Input: Select quotes ----
+      radioButtons("quote", "Quote",
+                   choices = c(None = "",
+                               "Double Quote" = '"',
+                               "Single Quote" = "'"),
+                   selected = '"') 
       
       
     ),
@@ -96,7 +118,7 @@ ui <- fluidPage(
                  tags$div(class="header",align="center"),
                  h3(textOutput("caption")),
                  verbatimTextOutput("summary")),
-        tabPanel("Uploaded Dataset",plotOutput("data_set"))
+        tabPanel("Uploaded Dataset",dataTableOutput("data_set"))
         
         
       )
@@ -108,6 +130,27 @@ ui <- fluidPage(
 
 server <- function(input, output,session) {
   #Read Dataset
+  
+  dataset2 <- reactive({
+    if (stringr::str_detect(input$file1, "\\.csv")){
+      return(read_csv(input$file1))
+    } else if (stringr::str_detect(input$file1, "\\.tsv")){
+      return(read_tsv(input$file1))
+    } else if (stringr::str_detect(input$file1, "\\.xls")){
+      return(read_xls(input$file1))
+    } else if (stringr::str_detect(input$file1, "\\.xlsx")){
+      return(read_xls(input$file1))
+    } else {
+      return(NULL)
+    }
+  })
+  
+
+
+  
+  
+
+  
   dataset <- read.csv(file = './data/template.csv')
   dataset$Date <- as.Date(paste(dataset$Date, sep = ""), format = "%d-%b-%y")
   
@@ -161,7 +204,6 @@ server <- function(input, output,session) {
     ts
     return(itemdata)
   })
-  
   
   
   output$caption <- renderText({
@@ -344,6 +386,7 @@ server <- function(input, output,session) {
         fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
         autoplot(fcses)}   
     }
+    
     # Sales Refund Forecasting
     else if (input$forecast_item == 'sale_refunds'){
       SLAE_REFUND_QUANTITIES <- ts_Sale_Refunds()
@@ -397,10 +440,10 @@ server <- function(input, output,session) {
   }
   
   )
-  
+  # Uploaded data set output
   output$data_set <- DT::renderDataTable({
     
-    
+    DT::datatable(data())   
     
     
   })
