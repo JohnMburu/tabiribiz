@@ -54,7 +54,7 @@ shinyUI(fluidPage(
             selectInput("forecast_item", "Select what to forecast:",
                         choices =  c(
                             "Sales" = "sales",
-                            "Sale Refunds" = "sale_refunds",
+                            "Sales Refunds" = "sales_refunds",
                             "Purchases" = "purchases",
                             "Cancelled POs" = "purchase_cancelation", selected = NULL)),
             

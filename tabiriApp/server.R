@@ -29,6 +29,11 @@ shinyServer(function(input, output,session) {
   # ## # ## # ## # ## # ## # ## # ## # ## 
   # Holiday Data
   #read in reference CSV for public holidays - dummy variables
+  holidays <- reactive({
+    myholidays <- read.csv(file = './data/public_holidays.csv')
+    return(myholidays)
+  })
+  
   pubhol <- read.csv('./data/public_holidays.csv',
                      header=T,
                      sep=",",
@@ -42,8 +47,12 @@ shinyServer(function(input, output,session) {
   
   
   #Get Data From the Uploaded Sales and Purchase file
+  
   dataset <- read.csv(file = './data/template.csv')
   dataset$Date <- as.Date(paste(dataset$Date, sep = ""), format = "%d-%b-%y")
+  
+  
+  
   
   
   # Data Preparation Logic
@@ -81,8 +90,8 @@ shinyServer(function(input, output,session) {
   })
   
   #sALES REFUND
-  ts_Sale_Refunds <- reactive({
-    itemdata <- ts(data()[,c("Sale_Refunds")],start=c(2020,4),frequency=365)
+  ts_Sales_Refunds <- reactive({
+    itemdata <- ts(data()[,c("Sales_Refunds")],start=c(2020,4),frequency=365)
     ts
     return(itemdata)
   })
@@ -167,13 +176,13 @@ shinyServer(function(input, output,session) {
       
     }
     # Sales Refund Plot
-    else if (input$forecast_item == 'sale_refunds'){
-      Refund_Quantities <- ts_Sale_Refunds()
+    else if (input$forecast_item == 'sales_refunds'){
+      Refund_Quantities <- ts_Sales_Refunds()
       print(Refund_Quantities)
       if (input$plot == 'Trend Line  (with Smoothened trend line)') {
         
         
-        p <- ggplot(data(), aes(x = Date, y = Sale_Refunds)) + 
+        p <- ggplot(data(), aes(x = Date, y = Sales_Refunds)) + 
           geom_line(color = "#00AFBB", size = 1)
         p
         
@@ -298,8 +307,8 @@ shinyServer(function(input, output,session) {
     }
     
     # Sales Refund Forecasting
-    else if (input$forecast_item == 'sale_refunds'){
-      SLAE_REFUND_QUANTITIES <- ts_Sale_Refunds()
+    else if (input$forecast_item == 'sales_refunds'){
+      SLAE_REFUND_QUANTITIES <- ts_Sales_Refunds()
       if (input$fplot == 'seasonal naive'){
         fcnv <- naive(SLAE_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcnv)
@@ -362,7 +371,8 @@ shinyServer(function(input, output,session) {
   
   # Uploaded data set output
   output$holidays <- renderTable({
-    samplesales()
+    if(is.null(data())){return ()}
+    holidays()
   })
   
   # ***********************************************************************************#
@@ -405,7 +415,7 @@ shinyServer(function(input, output,session) {
                  verbatimTextOutput("summary")),
         
         
-        tabPanel("Dataset",plotOutput("data_set")
+        tabPanel("Dataset",tableOutput("data_set")
         ),
         tabPanel("Holidays", tableOutput("holidays"))
         
