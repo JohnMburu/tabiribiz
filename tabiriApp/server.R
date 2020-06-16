@@ -11,168 +11,41 @@ require(gridExtra)
 library(datasets)
 library(fpp2)
 library(ggplot2)
-library(shinythemes)
 library(DT)
 library(tidyr)
 library(dplyr)
 library(readxl)
-
-# ***********************************************************************************#
-# User Interface 
-# ***********************************************************************************#
-ui <- fluidPage(
-  theme = shinytheme("yeti"),
-  
-  
-  tags$div(class="Header",style="font-family: Montserrat;",
-           tags$h2("TABIRI - Sales & Purchase Forecasting")),
-  
-  sidebarLayout(
-    sidebarPanel(
-      #Download the Template .csv file
-      tags$a(href='./data/template.csv', target='blank', 'Download the Template to use for Prediction', download = 'template.csv'),
-      
-      #FILE INPUT
-      fileInput('file1', 'Choose file to upload',
-                accept = c(
-                  '.csv',
-                  '.xls',
-                  '.xlsx'
-                )
-      ),
-      
-    # SELECT FORECAST OPTIONS
-      selectInput("forecast_item", "Select what to forecast:",
-                  choices =  c(
-                    "Sales" = "sales",
-                    "Sale Refunds" = "sale_refunds",
-                    "Purchases" = "purchases",
-                    "Cancelled POs" = "purchase_cancelation", selected = NULL)),
-      
-      #Allow users to Drill down using custom categorization column [this column can be used to identify products or outlets]
-      radioButtons("drill", "Do You Want to Enable use of Custom Categorization?",
-                   choices = c(
-                     "No" = "no",
-                     "Yes" = "yes",
-                     selected = NULL)),
-      
-      selectInput(
-        "item",
-        "By Custom Categorization:",
-        "choices"),
-      selectInput(
-        "location",
-        "By Location",
-        "choices"),
-      
-      selectInput(
-        "service",
-        "By Service Type",
-        "choices"),
-      tags$hr()
-      
-      
-    ),
-    mainPanel(
-      tabsetPanel(
-        #Forecat Tab
-        tabPanel("Forecast",plotOutput("forecast_view"),
-                 
-                 selectInput(
-                   "fplot",
-                   "Chose a Forecast algorithm:",
-                   c("seasonal naive","snaive","Simple Expotential Smoothing")),
-                 # SLIDER. NUMBER OF DAYS TO FORECAST
-                 sliderInput("forecast_days",
-                             "Number of Days to Forecast:",
-                             value = 14,
-                             min = 2,
-                             max = 31)
-                 
-                 ),
-        
-        # Graph Tab
-        tabPanel("Graphs",plotOutput("graphs_view"),
-                 selectInput(
-                   "plot",
-                   "Chose your desired plot type:",
-                   c("Trend Line  (with Smoothened trend line)","Area Plot","Scatter Plot","Regression Line"))
-                 
-                 ),
-        tabPanel("Summary",
-                 tags$div(class="header",align="center"),
-                 h3(textOutput("caption")),
-                 verbatimTextOutput("summary")),
-        tabPanel("Dataset",dataTableOutput("data_set"),
-                 
-                 #Input: Select number of rows to display ----
-                 radioButtons("disp", "Display",
-                              choices = c(Head = "head",
-                                          All = "all"),
-                              selected = "head"),
-                 # Input: Select separator ----
-                 radioButtons("sep", "Separator",
-                              choices = c(Comma = ",",
-                                          Semicolon = ";",
-                                          Tab = "\t"),
-                              selected = ","),
-                 
-                 # Input: Select quotes ----
-                 radioButtons("quote", "Quote",
-                              choices = c(None = "",
-                                          "Double Quote" = '"',
-                                          "Single Quote" = "'"),
-                              selected = '"') 
-                 
-                 
-                 
-                 )
-        
-        
-      )
-    )))
+library(zoo)
+library(xts)
 
 # ***********************************************************************************#
 # Server Side Logic
 # ***********************************************************************************#
+#File Size Limitation
+options(shiny.maxRequestSize = 9*1024^2)
 
-server <- function(input, output,session) {
+shinyServer(function(input, output,session) {
   #Read Uploaded dataset Logic
+  # ## # ## # ## # ## # ## # ## # ## # ## 
+  # Holiday Data
+  #read in reference CSV for public holidays - dummy variables
+  pubhol <- read.csv('./data/public_holidays.csv',
+                     header=T,
+                     sep=",",
+                     quote='"',
+                     strip.white=T,
+                     stringsAsFactors=F,
+                     fill=T)
   
-  dataset2 <- reactive({
-    if (stringr::str_detect(input$file1, "\\.csv")){
-      return(read_csv(input$file1))
-    } else if (stringr::str_detect(input$file1, "\\.tsv")){
-      return(read_tsv(input$file1))
-    } else if (stringr::str_detect(input$file1, "\\.xls")){
-      return(read_xls(input$file1))
-    } else if (stringr::str_detect(input$file1, "\\.xlsx")){
-      return(read_xls(input$file1))
-    } else {
-      return(NULL)
-    }
-  })
+  pubhol$Date <- zoo::as.Date(pubhol$Date, format = "%d/%m/%Y")
+  pubhol$weekday <- weekdays(pubhol$Date)
   
   
-  mydata <- reactive({
-    inFile <- input$file1
-    if (is.null(inFile))
-      return(NULL)
-    
-    data <-read.csv(file = inFile$datapath)
-    data$Date <- as.Date(paste(data$Date, sep = ""), format = "%d-%b-%y")
-    
-      return(data)
-    data
-    
-    
-    
-  })
-  
+  #Get Data From the Uploaded Sales and Purchase file
   dataset <- read.csv(file = './data/template.csv')
   dataset$Date <- as.Date(paste(dataset$Date, sep = ""), format = "%d-%b-%y")
   
-
+  
   # Data Preparation Logic
   # This logic Allows users to drill down using the Custom category, Location and Service offered by SMES 
   data <- reactive({
@@ -229,13 +102,26 @@ server <- function(input, output,session) {
   })
   
   
+  
+  # ***********************************************************************************#
+  # Text Section Section 
+  # ***********************************************************************************#
+  
   output$caption <- renderText({
     input$item
   })
   
+  
+  
+  # ***********************************************************************************#
+  # Summary Section 
+  # ***********************************************************************************#
+  
   output$summary <- renderPrint({
-    itemdata <- data()
-    summary(itemdata)
+    #itemdata <- data()
+    if(is.null(data)){return()}
+    summary(data())
+    #dataset11
   })
   
   
@@ -246,8 +132,7 @@ server <- function(input, output,session) {
   output$graphs_view <- renderPlot({
     # Sales Plot
     if (input$forecast_item == 'sales'){
-      Sales_Quantities <- ts_Sales()
-      print(Sales_Quantities)
+      
       if (input$plot == 'Trend Line  (with Smoothened trend line)') {
         
         p <- ggplot(data(), aes(x = Date, y = Sales)) + 
@@ -341,9 +226,9 @@ server <- function(input, output,session) {
       else if(input$plot == 'Scatter Plot'){
         ggplot(data(), aes(x=Date, y=Purchases)) + geom_point() + 
           geom_point() +
-         geom_smooth(method=lm)
-    
-
+          geom_smooth(method=lm)
+        
+        
       }
       else if(input$plot == 'Regression Line'){
         ggplot(data(), aes(x = Date, y = Purchases)) + 
@@ -383,7 +268,7 @@ server <- function(input, output,session) {
           #scale_color_manual(values = c("#00AFBB", "#E7B800")) +
           theme_minimal()
       }
-     
+      
       
     }
     
@@ -465,16 +350,68 @@ server <- function(input, output,session) {
   }
   
   )
-  # Uploaded data set output
-  output$data_set <- DT::renderDataTable({
-    
-    DT::datatable(data())   
-    
+  
+  # ***********************************************************************************#
+  # Dataset view
+  # ***********************************************************************************#
+  output$data_set <- renderTable({
+    if(is.null(data())){return ()}
+    data()
   })
   
   
+  # Uploaded data set output
+  output$holidays <- renderTable({
+    samplesales()
+  })
   
-}
-
-# Run the application 
-shinyApp(ui = ui, server = server)
+  # ***********************************************************************************#
+  # Dynamically Render the Presentation Layer Tabs After Data Upload
+  # ***********************************************************************************#
+  output$tb <- renderUI({
+    if(is.null(data()))
+      h5(tags$img(src='tabiri.png', heigth=900, width=900))
+    
+    else
+      tabsetPanel(
+        
+        #Forecat Tab
+        tabPanel("Forecast",plotOutput("forecast_view"),
+                 
+                 selectInput(
+                   "fplot",
+                   "Chose a Forecast algorithm:",
+                   c("seasonal naive","snaive","Simple Expotential Smoothing")),
+                 # SLIDER. NUMBER OF DAYS TO FORECAST
+                 sliderInput("forecast_days",
+                             "Number of Days to Forecast:",
+                             value = 14,
+                             min = 2,
+                             max = 31)
+                 
+        ),
+        
+        # Graph Tab
+        tabPanel("Graphs",plotOutput("graphs_view"),
+                 selectInput(
+                   "plot",
+                   "Chose your desired plot type:",
+                   c("Trend Line  (with Smoothened trend line)","Area Plot","Scatter Plot","Regression Line"))
+                 
+        ),
+        tabPanel("Summary",
+                 tags$div(class="header",align="center"),
+                 h3(textOutput("caption")),
+                 verbatimTextOutput("summary")),
+        
+        
+        tabPanel("Dataset",plotOutput("data_set")
+        ),
+        tabPanel("Holidays", tableOutput("holidays"))
+        
+        
+      )
+  })
+  
+  
+})
