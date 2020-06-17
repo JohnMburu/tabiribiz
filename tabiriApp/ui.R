@@ -13,48 +13,34 @@ library(shinythemes)
 # ***********************************************************************************#
 shinyUI(fluidPage(
     theme = shinytheme("yeti"),
-    
-    
     tags$div(class="Header",style="font-family: Montserrat;",
              tags$h2("TABIRI - Sales & Purchase Forecasting")),
-    
     sidebarLayout(
         sidebarPanel(
-            #Download the Template .csv file
-
+                        fileInput('file1', 'Choose file to upload',
+                      accept = c(
+                          '.csv',
+                          '.xls',
+                          '.xlsx'
+                      )
+            ),
+            helpText("Default max. file size is 10MB"),
+            h5(helpText("Data Preparations")),
+                        radioButtons("disp", "Display",
+                         choices = c(All = "all",
+                                     Head = "head"),
+                         selected = "all"),
             
-            #FILE INPUT
-            fileInput('file1', 'Choose CSV File',
-                      accept=c('text/csv', 
-                               'text/comma-separated-values,text/plain', 
-                               '.csv')),
-            helpText("Max File size is 10MB"),
-            #Uploaded data setup
-            #Input: Select number of rows to display ----
-            radioButtons("disp", "Display",
-                         choices = c(Head = "head",
-                                     All = "all"),
-                         selected = "head"),
-            # Input: Select separator ----
-            radioButtons("sep", "Separator",
-                         choices = c(Comma = ",",
-                                     Semicolon = ";",
-                                     Tab = "\t"),
-                         selected = ","),
-            
-            # Input: Select quotes ----
-            #radioButtons("quote", "Quote",
-            #            choices = c(None = "",
-            #                       "Double Quote" = '"',
-            #                      "Single Quote" = "'"),
-            #         selected = '"'), 
             tags$hr(),
+            br(),
+            radioButtons(inputId = 'sep', label = 'Separator', choices = c(Comma=',',Semicolon=';',Tab='\t', Space=''), selected = ','),
             
+            tags$hr(),
             # SELECT FORECAST OPTIONS
             selectInput("forecast_item", "Select what to forecast:",
                         choices =  c(
                             "Sales" = "sales",
-                            "Sales Refunds" = "sales_refunds",
+                            "Sales Refund" = "sales_refund",
                             "Purchases" = "purchases",
                             "Cancelled POs" = "purchase_cancelation", selected = NULL)),
             
@@ -80,18 +66,12 @@ shinyUI(fluidPage(
                 "choices"),
             
             
-            
-            tags$hr(),
-            
-            
-            radioButtons("weekends", "Include Weekends?",
-                         choices = c(
-                             "No" = "no",
-                             "Yes" = "yes",
-                             selected = NULL)),
+            tags$hr()   
             
         ),
         mainPanel(
-            uiOutput("tb") 
+            uiOutput("tb")
         )
-    )))
+        
+    )
+))
