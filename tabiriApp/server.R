@@ -31,6 +31,12 @@ shinyServer(function(input, output,session) {
     return(myholidays)
   })
   
+  #read template
+  template <- reactive({
+    mytemplate <- read.csv(file = './data/template.csv')
+    return(mytemplate)
+  })
+  
  # Read uploaded file 
   mydata <- reactive({
     inFile <- input$file1
@@ -97,6 +103,21 @@ shinyServer(function(input, output,session) {
     return(itemdata)
   })
   
+    # ***********************************************************************************#
+    # Download Dataset Template
+    # ***********************************************************************************#
+    
+    # Download CSV template
+    # Downloadable csv of selected dataset ----
+    output$downloadData <- downloadHandler(
+      filename = function() {
+        paste(input$template, "template.csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(template(), file, row.names = FALSE)
+      }
+    )
+    
   
   # ***********************************************************************************#
   # Text Section Section 

@@ -17,6 +17,8 @@ shinyUI(fluidPage(
              tags$h2("TABIRI - Sales & Purchase Forecasting")),
     sidebarLayout(
         sidebarPanel(
+            #tags$a (href="/tabiriApp/data/template.csv", "Download Template here!"),
+            downloadButton("downloadData", "Download Dataset Template"),
                         fileInput('file1', 'Choose file to upload',
                       accept = c(
                           '.csv',

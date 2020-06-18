@@ -1,16 +1,13 @@
-Date,Holiday Name,Information,Applicable To,,,,
-01/01/20,New Year's Day,,KE,,,,
-04/10/20,Good Friday,,KE,,,,
-04/13/20,Easter Monday,,KE,,,,
-05/01/20,Labour Day,,KE,,,,
-05/25/20,Eid al-Fitr,,KE,,,,
-06/01/20,Madaraka Day,,KE,,,,
-07/31/20,Eid al-Adha,,KE,,,,
-10/10/20,Huduma Day,,KE,,,,
-10/20/20,Mashujaa Day,,KE,,,,
-12/12/20,Jamhuri Day,,KE,,,,
-12/25/20,Christmas Day,,KE,,,,
-12/26/20,Utamaduni Day,,KE,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
+Date,Holiday Name,Information,Applicable To
+1/1/2020,New Year's Day,International,KE
+4/10/2020,Good Friday,International,KE
+4/13/2020,Easter Monday,International,KE
+5/1/2020,Labour Day,International,KE
+5/25/2020,Eid al-Fitr,International,KE
+6/1/2020,Madaraka Day,National,KE
+7/31/2020,Eid al-Adha,International,KE
+10/10/2020,Huduma Day,National,KE
+10/20/2020,Mashujaa Day,National,KE
+12/12/2020,Jamhuri Day,National,KE
+12/25/2020,Christmas Day,International,KE
+12/26/2020,Utamaduni Day,National,KE
