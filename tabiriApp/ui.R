@@ -21,9 +21,7 @@ shinyUI(fluidPage(
             downloadButton("downloadData", "Download Dataset Template"),
                         fileInput('file1', 'Choose file to upload',
                       accept = c(
-                          '.csv',
-                          '.xls',
-                          '.xlsx'
+                          '.csv'
                       )
             ),
             helpText("Default max. file size is 10MB"),
@@ -66,8 +64,10 @@ shinyUI(fluidPage(
                 "service",
                 "By Service Type",
                 "choices"),
-            
-            
+            selectInput(
+                "sector",
+                "By Sector",
+                "choices"),
             tags$hr()   
             
         ),
