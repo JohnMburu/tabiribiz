@@ -1,4 +1,4 @@
-Custom_Category,Date ,Sales,Sales_Refund,Purchases,Purchase_Cancelation,Location,Service,Company_size,Category
+Custom_Category,Date ,Sales,Sales_Refund,Purchases,Purchase_Cancelation,Location,Service,SME_size,Sector
 Store A,1-Apr-20,0,1,0,0,Rural & Urban,Goods & Services,50,Energy
 Store A,2-Apr-20,0,0,0,0,Rural & Urban,Goods & Services,50,Energy
 Store A,3-Apr-20,2,0,0,0,Rural & Urban,Goods & Services,50,Energy
