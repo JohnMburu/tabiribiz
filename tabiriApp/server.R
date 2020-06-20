@@ -18,6 +18,11 @@ library(readxl)
 library(zoo)
 library(xts)
 
+#arima
+library(quantmod)
+library(tseries)
+library(timeSeries)
+library(forecast)
 # ***********************************************************************************#
 # Server Side Logic
 # ***********************************************************************************#
@@ -127,6 +132,8 @@ shinyServer(function(input, output,session) {
     
   })
   
+
+
   
   # ***********************************************************************************#
   # Summary Section 
@@ -295,7 +302,17 @@ shinyServer(function(input, output,session) {
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
-        autoplot(fcses)}   
+        autoplot(fcses)
+      }   
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(SALES_QUANTITIES, h = input$forecast_days)
+        autoplot(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(SALES_QUANTITIES, h = input$forecast_days)
+        autoplot(fcdrf)
+      } 
+ 
     }
     
     # Sales Refund Forecasting
@@ -311,7 +328,16 @@ shinyServer(function(input, output,session) {
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(SALES_REFUND_QUANTITIES, h = input$forecast_days)
-        autoplot(fcses)} 
+        autoplot(fcses)
+      }
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        autoplot(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        autoplot(fcdrf)
+      }  
     }
     
     # Purchase Forecasting
@@ -327,7 +353,16 @@ shinyServer(function(input, output,session) {
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(PURCHASE_QUANTITIES, h = input$forecast_days)
-        autoplot(fcses)} 
+        autoplot(fcses)
+      } 
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(PURCHASE_QUANTITIES, h = input$forecast_days)
+        autoplot(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(PURCHASE_QUANTITIES, h = input$forecast_days)
+        autoplot(fcdrf)
+      } 
       
     }
     # Purchase Forecasting
@@ -343,7 +378,16 @@ shinyServer(function(input, output,session) {
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
-        autoplot(fcses)} 
+        autoplot(fcses)
+      }
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        autoplot(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        autoplot(fcdrf)
+      }  
       
     }
   })
@@ -353,7 +397,7 @@ shinyServer(function(input, output,session) {
   # View Uploaded Dataset
   # ***********************************************************************************#
   output$data_set <- DT::renderDataTable({
-   DT::datatable(mydata()) 
+   DT::datatable(mydata(),editable = TRUE) 
   })
   
   # ***********************************************************************************#
@@ -361,8 +405,40 @@ shinyServer(function(input, output,session) {
   # View Holidays
   # ***********************************************************************************# 
   output$holidays <- DT::renderDataTable({
-    DT::datatable(holidays())  
+    DT::datatable(holidays(),editable = TRUE)  
   })
+  
+
+  # ***********************************************************************************#
+  # Comparison
+  # ***********************************************************************************#
+    
+  output$compare <- renderPlot({
+    if (input$forecast_item == 'sales'){
+      SALES_QUANTITIES <- ts_Sales()
+      fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
+      fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days)
+      fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
+      par(mfrow=c(3,1))
+      autoplot(fcsnv)
+      autoplot(fcses)
+      autoplot(fcnv)
+      
+      
+
+    } else if (input$forecast_item == 'sales_refund') {
+      SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
+
+    }else if (input$forecast_item == 'purchases'){
+      PURCHASE_QUANTITIES <- ts_Purchases()
+
+    }else if (input$forecast_item == 'purchase_cancelation'){
+      PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
+
+    }
+
+  })
+  
   
   # ***********************************************************************************#
   # Dynamically Render the Presentation Layer Tabs After Data Upload
@@ -379,7 +455,7 @@ shinyServer(function(input, output,session) {
                  selectInput(
                    "fplot",
                    "Chose a Forecast algorithm:",
-                   c("seasonal naive","snaive","Simple Expotential Smoothing")),
+                   c("seasonal naive","snaive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
                  # SLIDER. NUMBER OF DAYS TO FORECAST
                  sliderInput("forecast_days",
                              "Number of Days to Forecast:",
@@ -400,7 +476,9 @@ shinyServer(function(input, output,session) {
                  verbatimTextOutput("summary")),
         tabPanel("Dataset",dataTableOutput("data_set")
         ),
-        tabPanel("Holidays", dataTableOutput("holidays"))
+        tabPanel("Holidays", dataTableOutput("holidays") ) ,
+        tabPanel("Model Comparison", plotOutput("compare") )      
+                 
       )
   }) 
 })
