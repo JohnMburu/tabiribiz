@@ -48,3 +48,16 @@ app.R
     shinyapp
     
 ```
+## Dataset
+this model utilizes data in the following formal
+|```Custom ```|```Date```| ```Ts1```| ```Ts2```|```Ts3```|```Ts4```|```Location```|```Service```|```Company_size```|```Sector```|
+Custom_Category []
+Date = dd/mm/yy
+Sales = Ts1
+Sales_Refund = Ts2
+Purchases = Ts3
+Canceled Purchases = Ts4
+Location []
+Service[]
+Company_size []
+Sector []

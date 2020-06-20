@@ -142,19 +142,163 @@ shinyServer(function(input, output,session) {
   
   # ***********************************************************************************#
   # Summary Section 
+  # Display Forecasting accuracy
   # ***********************************************************************************#
-  
+  #"seasonal naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast"
   output$summary <- renderPrint({
-      # SALES_QUANTITIES <- data()
-      # fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
-      # fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days)
-      # fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
-      # par(mfrow=c(3,1))
-      
-      # accuracy(fcnv)
-      # accuracy(fcsnv)
-      # accuracy(fcses)
-      summary(data())
+    #data Prep
+        f_ts_Sales <- ts_Sales()
+        f_ts_Sales_Refund <- ts_Sales_Refund()
+        f_ts_Purchases<- ts_Purchases()
+        f_ts_Purchase_Cancelation <- ts_Purchase_Cancelation()
+        
+        #Seasonal Naive Accuracy
+        if (input$f_accuracy=='Seasonal Naive'){
+          fcnv <- snaive(f_ts_Sales, h = input$forecast_days_acc)
+          accuracy(fcnv)
+          
+          if (input$accuracy_item=='sales'){
+            fcsnv <- snaive(f_ts_Sales, h = input$forecast_days_acc)
+            accuracy(fcsnv)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            fcsnv <- snaive(f_ts_Sales_Refund, h = input$forecast_days_acc)
+            accuracy(fcsnv)
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            fcsnv <- snaive(f_ts_Purchases, h = input$forecast_days_acc)
+            accuracy(fcsnv)
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            fcsnv <- snaive(f_ts_Purchase_Cancelation, h = input$forecast_days_acc)
+            accuracy(fcsnv)
+          }
+
+          
+        }
+        #Naive Accuracy
+        else if (input$f_accuracy=='Naive'){
+            if (input$accuracy_item=='sales'){
+              fcnv <- naive(f_ts_Sales, h = input$forecast_days_acc)
+              accuracy(fcnv)
+              
+            }
+            else if (input$accuracy_item=='sales_refund'){
+              fcnv <- naive(f_ts_Sales_Refund, h = input$forecast_days_acc)
+              accuracy(fcnv)
+            }
+            
+            else if (input$accuracy_item=='purchases'){
+              fcnv <- naive(f_ts_Purchases, h = input$forecast_days_acc)
+              accuracy(fcnv)
+            }
+            else if (input$accuracy_item=='purchase_cancelation'){
+              fcnv <- naive(f_ts_Purchase_Cancelation, h = input$forecast_days_acc)
+              accuracy(fcnv)
+            }
+          
+          
+        }
+        
+        #Exponential smoothing accuracy
+        else if (input$f_accuracy=='Simple Expotential Smoothing'){
+          
+          if (input$accuracy_item=='sales'){
+            fcses <- ses(f_ts_Sales, h = input$forecast_days_acc)
+            accuracy(fcses)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            fcses <- ses(f_ts_Sales_Refund, h = input$forecast_days_acc)
+            accuracy(fcses)
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            fcses <- ses(f_ts_Purchases, h = input$forecast_days_acc)
+            accuracy(fcses)
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            fcses <- ses(f_ts_Purchase_Cancelation, h = input$forecast_days_acc)
+            accuracy(fcses)
+          }
+          
+          
+          
+          
+        }
+        #Mean Average Accuracy
+        else if (input$f_accuracy=='Mean Average Forecast'){
+          if (input$accuracy_item=='sales'){
+            fcmean <- meanf(f_ts_Sales, h = input$forecast_days_acc)
+            accuracy(fcmean)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            fcmean <- meanf(f_ts_Sales_Refund, h = input$forecast_days_acc)
+            accuracy(fcmean)
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            fcmean <- meanf(f_ts_Purchases, h = input$forecast_days_acc)
+            accuracy(fcmean)
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            fcmean <- meanf(f_ts_Purchase_Cancelation, h = input$forecast_days_acc)
+            accuracy(fcmean)
+          }
+          
+          
+        }
+        
+        #Drift Accuracy
+        else if (input$f_accuracy=='Drift Forecast'){
+          
+          if (input$accuracy_item=='sales'){
+            fcdrf <- rwf(f_ts_Sales, h = input$forecast_days_acc)
+            accuracy(fcdrf)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            fcdrf <- rwf(f_ts_Sales_Refund, h = input$forecast_days_acc)
+            accuracy(fcdrf)
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            fcdrf <- rwf(f_ts_Purchases, h = input$forecast_days_acc)
+            accuracy(fcdrf)
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            fcdrf <- rwf(f_ts_Purchase_Cancelation, h = input$forecast_days_acc)
+            accuracy(fcdrf)
+          }
+          
+          
+        }
+        else if (input$f_accuracy=='Summary'){
+          
+          
+          
+          if (input$accuracy_item=='sales'){
+            summary(f_ts_Sales)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            summary(f_ts_Sales_Refund)
+
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            summary(f_ts_Purchases)
+
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            summary(f_ts_Purchase_Cancelation)
+
+          }
+          
+        }
   })
   
   
@@ -305,14 +449,14 @@ shinyServer(function(input, output,session) {
     # Sales Forecasting
     if (input$forecast_item == 'sales'){
       SALES_QUANTITIES <- ts_Sales()
-      if (input$fplot == 'seasonal naive'){
-        fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
+      if (input$fplot == 'Seasonal Naive'){
+        fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
         
-        autoplot(fcnv)
-      }
-      else if(input$fplot=='snaive'){
-        fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
+        autoplot(fcnv)
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
@@ -332,13 +476,13 @@ shinyServer(function(input, output,session) {
     # Sales Refund Forecasting
     else if (input$forecast_item == 'sales_refund'){
       SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
-      if (input$fplot == 'seasonal naive'){
-        fcnv <- naive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
-        autoplot(fcnv)
-      }
-      else if(input$fplot=='snaive'){
+      if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        autoplot(fcnv)
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(SALES_REFUND_QUANTITIES, h = input$forecast_days)
@@ -357,13 +501,13 @@ shinyServer(function(input, output,session) {
     # Purchase Forecasting
     else if (input$forecast_item == 'purchases'){
       PURCHASE_QUANTITIES <- ts_Purchases()
-      if (input$fplot == 'seasonal naive'){
-        fcnv <- naive(PURCHASE_QUANTITIES, h = input$forecast_days)
-        autoplot(fcnv)
-      }
-      else if(input$fplot=='snaive'){
+      if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(PURCHASE_QUANTITIES, h = input$forecast_days)
+        autoplot(fcnv)
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(PURCHASE_QUANTITIES, h = input$forecast_days)
@@ -382,13 +526,13 @@ shinyServer(function(input, output,session) {
     # Purchase Forecasting
     else if (input$forecast_item == 'purchase_cancelation'){
       PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
-      if (input$fplot == 'seasonal naive'){
-        fcnv <- naive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
-        autoplot(fcnv)
-      }
-      else if(input$fplot=='snaive'){
+      if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        autoplot(fcnv)
       }
       else if(input$fplot == "Simple Expotential Smoothing"){
         fcses <- ses(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
@@ -469,7 +613,7 @@ shinyServer(function(input, output,session) {
                  selectInput(
                    "fplot",
                    "Chose a Forecast algorithm:",
-                   c("seasonal naive","snaive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
+                   c("Seasonal Naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
                  # SLIDER. NUMBER OF DAYS TO FORECAST
                  sliderInput("forecast_days",
                              "Number of Days to Forecast:",
@@ -484,14 +628,36 @@ shinyServer(function(input, output,session) {
                    "Chose your desired plot type:",
                    c("Trend Line","Area Plot","Scatter Plot","Regression Line"))      
         ),
-        tabPanel("Summary",
-                 tags$div(class="header",align="center"),
-                 h3(textOutput("caption")),
-                 verbatimTextOutput("summary")),
+        tabPanel("Forecast Accuracy", verbatimTextOutput("summary"),
+                 
+                 selectInput(
+                   "f_accuracy",
+                   "Select a Forecast algorithm:",
+                   c("Naive","Seasonal Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
+                 
+                 
+                 selectInput("accuracy_item", "check accuracy for :",
+                             choices =  c(
+                               "Sales" = "sales",
+                               "Sales Refund" = "sales_refund",
+                               "Purchases" = "purchases",
+                               "Cancelled POs" = "purchase_cancelation", selected = NULL)),
+                 
+                 
+                 
+                 
+                 # SLIDER. NUMBER OF DAYS TO FORECAST
+                 sliderInput("forecast_days_acc",
+                             "Number of Days to Forecast:",
+                             value = 2,
+                             min = 2,
+                             max = 31)                        
+                 ),
+        
+        
         tabPanel("Dataset",dataTableOutput("data_set")
         ),
-        tabPanel("Holidays", dataTableOutput("holidays") ) ,
-        tabPanel("Model Comparison", plotOutput("compare") )      
+        tabPanel("Holidays", dataTableOutput("holidays") )      
                  
       )
   }) 
