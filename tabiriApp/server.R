@@ -17,6 +17,9 @@ library(dplyr)
 library(readxl)
 library(zoo)
 library(xts)
+library(readr)
+library(scales)
+
 
 #arima
 library(quantmod)
@@ -66,7 +69,8 @@ shinyServer(function(input, output,session) {
        if (input$drill == 'yes'){
            itemdata_sr <- subset(mydata(),Custom_Category==input$item)
            itemdata_sr_loc <- subset(itemdata_sr,Location==input$location)
-           itemdata <- subset(itemdata_sr_loc,Service==input$service)
+           itemdata_sr_loc_ser <- subset(itemdata_sr_loc,Service==input$service)
+           itemdata <- subset(itemdata_sr_loc_ser,Sector==input$sector)
            itemdata$Date <- as.Date(paste(itemdata$Date, sep = ""), format = "%d-%b-%y")
            return(itemdata) 
            itemdata
@@ -80,31 +84,32 @@ shinyServer(function(input, output,session) {
 
 # Update Inputs with data from the uploaded file
  observe({
-   updateSelectInput(session, "item", choices = unique(mydata()[,c("Custom_Category")] ))
-   updateSelectInput(session, "location", choices = unique(mydata()[,c("Location")]))
-   updateSelectInput(session, "service", choices = unique(mydata()[,c("Service")]))
+   updateSelectInput(session, "item", choices = unique(mydata()[,c(1)])) # first column
+   updateSelectInput(session, "location", choices = unique(mydata()[,c(7)])) # 7th column
+   updateSelectInput(session, "service", choices = unique(mydata()[,c(8)])) # 8th Column
+   updateSelectInput(session, "sector", choices = unique(mydata()[,c(10)])) # 8th Column
  })
   
   
   #DECLARE TIME SERIES DATA
   #Sales
   ts_Sales <- reactive({
-    itemdata <- ts(data()[,c("Sales")],start=c(2020,4),frequency=365)
+    itemdata <- ts(data()[,c(3)],start=c(2020,4),frequency=365)
     return(itemdata)
   })
   #Sales_Refunds
     ts_Sales_Refund <- reactive({
-    itemdata <- ts(data()[,c("Sales_Refund")],start=c(2020,4),frequency=365)
+    itemdata <- ts(data()[,c(4)],start=c(2020,4),frequency=365)
     return(itemdata)
   })
   #Purchases
     ts_Purchases <- reactive({
-    itemdata <- ts(data()[,c("Purchases")],start=c(2020,4),frequency=365)
+    itemdata <- ts(data()[,c(5)],start=c(2020,4),frequency=365)
     return(itemdata)
   })
   #Purchase_cancelation
     ts_Purchase_Cancelation <- reactive({
-    itemdata <- ts(data()[,c("Purchase_Cancelation")],start=c(2020,4),frequency=365)
+    itemdata <- ts(data()[,c(6)],start=c(2020,4),frequency=365)
     return(itemdata)
   })
   
@@ -140,6 +145,15 @@ shinyServer(function(input, output,session) {
   # ***********************************************************************************#
   
   output$summary <- renderPrint({
+      # SALES_QUANTITIES <- data()
+      # fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
+      # fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days)
+      # fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
+      # par(mfrow=c(3,1))
+      
+      # accuracy(fcnv)
+      # accuracy(fcsnv)
+      # accuracy(fcses)
       summary(data())
   })
   
