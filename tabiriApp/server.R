@@ -26,6 +26,7 @@ library(quantmod)
 library(tseries)
 library(timeSeries)
 library(forecast)
+library(plotly)
 # ***********************************************************************************#
 # Server Side Logic
 # ***********************************************************************************#
@@ -154,9 +155,6 @@ shinyServer(function(input, output,session) {
         
         #Seasonal Naive Accuracy
         if (input$f_accuracy=='Seasonal Naive'){
-          fcnv <- snaive(f_ts_Sales, h = input$forecast_days_acc)
-          accuracy(fcnv)
-          
           if (input$accuracy_item=='sales'){
             fcsnv <- snaive(f_ts_Sales, h = input$forecast_days_acc)
             accuracy(fcsnv)
@@ -443,6 +441,7 @@ shinyServer(function(input, output,session) {
   # ***********************************************************************************#
   # Forecasting
   # Logic for Sales, Sales Refund, Purchases and Purchase Refunds
+  # Plot Logic
   # ***********************************************************************************#
   
   output$forecast_view <- renderPlot({
@@ -451,8 +450,8 @@ shinyServer(function(input, output,session) {
       SALES_QUANTITIES <- ts_Sales()
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
-        
         autoplot(fcsnv)
+       #return(fcsnv)
       }
       else if(input$fplot=='Naive'){
         fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
@@ -549,6 +548,123 @@ shinyServer(function(input, output,session) {
       
     }
   })
+  # ***********************************************************************************#
+  # Forecasting
+  # Logic for Sales, Sales Refund, Purchases and Purchase Refunds
+  # Accuracy Logic 
+  # ***********************************************************************************#
+  output$forecast_accuracy <- renderTable({
+    # Sales Forecasting
+    if (input$forecast_item == 'sales'){
+      SALES_QUANTITIES <- ts_Sales()
+      if (input$fplot == 'Seasonal Naive'){
+        fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
+        return(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
+        return(fcnv)
+      }
+      else if(input$fplot == "Simple Expotential Smoothing"){
+        fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
+        return(fcses)
+      }   
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(SALES_QUANTITIES, h = input$forecast_days)
+        return(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(SALES_QUANTITIES, h = input$forecast_days)
+        return(fcdrf)
+      } 
+      
+    }
+    
+    # Sales Refund Forecasting
+    else if (input$forecast_item == 'sales_refund'){
+      SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
+      if (input$fplot == 'Seasonal Naive'){
+        fcsnv <- snaive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        return(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        return(fcnv)
+      }
+      else if(input$fplot == "Simple Expotential Smoothing"){
+        fcses <- ses(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        return(fcses)
+      }
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        return(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
+        return(fcdrf)
+      }  
+    }
+    
+    # Purchase Forecasting
+    else if (input$forecast_item == 'purchases'){
+      PURCHASE_QUANTITIES <- ts_Purchases()
+      if (input$fplot == 'Seasonal Naive'){
+        fcsnv <- snaive(PURCHASE_QUANTITIES, h = input$forecast_days)
+        return(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(PURCHASE_QUANTITIES, h = input$forecast_days)
+        return(fcnv)
+      }
+      else if(input$fplot == "Simple Expotential Smoothing"){
+        fcses <- ses(PURCHASE_QUANTITIES, h = input$forecast_days)
+        return(fcses)
+      } 
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(PURCHASE_QUANTITIES, h = input$forecast_days)
+        return(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(PURCHASE_QUANTITIES, h = input$forecast_days)
+        return(fcdrf)
+      } 
+      
+    }
+    # Purchase Forecasting
+    else if (input$forecast_item == 'purchase_cancelation'){
+      PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
+      if (input$fplot == 'Seasonal Naive'){
+        fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        return(fcsnv)
+      }
+      else if(input$fplot=='Naive'){
+        fcnv <- naive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        return(fcnv)
+      }
+      else if(input$fplot == "Simple Expotential Smoothing"){
+        fcses <- ses(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        return(fcses)
+      }
+      else if(input$fplot == "Mean Average Forecast"){
+        fcmean <- meanf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        return(fcmean)
+      } 
+      else if(input$fplot == "Drift Forecast"){
+        fcdrf <- rwf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+        return(fcdrf)
+      }  
+      
+    }
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   # ***********************************************************************************#
   # Dataset view
@@ -566,36 +682,25 @@ shinyServer(function(input, output,session) {
     DT::datatable(holidays(),editable = TRUE)  
   })
   
-
+  
   # ***********************************************************************************#
-  # Comparison
-  # ***********************************************************************************#
+  # Testing
+  # Testing
+  # ***********************************************************************************# 
+  output$MyPlot <- renderPlot({
+    PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
+    fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
+    autoplot(fcsnv)
     
-  output$compare <- renderPlot({
-    if (input$forecast_item == 'sales'){
-      SALES_QUANTITIES <- ts_Sales()
-      fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
-      fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days)
-      fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
-      par(mfrow=c(3,1))
-      autoplot(fcsnv)
-      autoplot(fcses)
-      autoplot(fcnv)
-      
-      
-
-    } else if (input$forecast_item == 'sales_refund') {
-      SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
-
-    }else if (input$forecast_item == 'purchases'){
-      PURCHASE_QUANTITIES <- ts_Purchases()
-
-    }else if (input$forecast_item == 'purchase_cancelation'){
-      PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
-
-    }
-
   })
+  
+  output$MyTable <- renderTable({
+    autoarima1 <- auto.arima(ts_Purchase_Cancelation())
+    forecast1 <- forecast(autoarima1, h = input$forecast_days)
+    return(forecast1)
+    
+  })
+  
   
   
   # ***********************************************************************************#
@@ -606,21 +711,25 @@ shinyServer(function(input, output,session) {
       h5(tags$img(src='tabiri.png', heigth=900, width=900))
     else
       tabsetPanel(
-        
         #Forecat Tab
-        tabPanel("Forecast",plotOutput("forecast_view"),
-                 
-                 selectInput(
-                   "fplot",
-                   "Chose a Forecast algorithm:",
-                   c("Seasonal Naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
-                 # SLIDER. NUMBER OF DAYS TO FORECAST
-                 sliderInput("forecast_days",
-                             "Number of Days to Forecast:",
-                             value = 14,
-                             min = 2,
-                             max = 31)       
+        tabPanel(h4("Forecast"),
+                 column(6,h4("Forecast Plot"), plotOutput("forecast_view"),
+                        selectInput(
+                          "fplot",
+                          "Chose a Forecast algorithm:",
+                          c("Seasonal Naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
+                        # SLIDER. NUMBER OF DAYS TO FORECAST
+                        sliderInput("forecast_days",
+                                    "Number of Days to Forecast:",
+                                    value = 14,
+                                    min = 2,
+                                    max = 31)
+                 ),
+                 column(6, h4("Forecast Accuracy"),tableOutput("forecast_accuracy")
+                 )
         ),
+        
+        
         # Graph Tab
         tabPanel("Graphs",plotOutput("graphs_view"),
                  selectInput(
@@ -643,9 +752,6 @@ shinyServer(function(input, output,session) {
                                "Purchases" = "purchases",
                                "Cancelled POs" = "purchase_cancelation", selected = NULL)),
                  
-                 
-                 
-                 
                  # SLIDER. NUMBER OF DAYS TO FORECAST
                  sliderInput("forecast_days_acc",
                              "Number of Days to Forecast:",
@@ -653,10 +759,8 @@ shinyServer(function(input, output,session) {
                              min = 2,
                              max = 31)                        
                  ),
+        tabPanel("Dataset",dataTableOutput("data_set")),
         
-        
-        tabPanel("Dataset",dataTableOutput("data_set")
-        ),
         tabPanel("Holidays", dataTableOutput("holidays") )      
                  
       )
