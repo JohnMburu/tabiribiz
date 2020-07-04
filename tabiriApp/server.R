@@ -73,6 +73,9 @@ shinyServer(function(input, output,session) {
            itemdata_sr_loc_ser <- subset(itemdata_sr_loc,Service==input$service)
            itemdata <- subset(itemdata_sr_loc_ser,Sector==input$sector)
            itemdata$Date <- as.Date(paste(itemdata$Date, sep = ""), format = "%d-%b-%y")
+           
+           #Remove N/A Dates
+           itemdata <- itemdata %>% filter(!is.na(Date))
            return(itemdata) 
            itemdata
        } else {
