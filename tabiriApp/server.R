@@ -655,19 +655,17 @@ shinyServer(function(input, output,session) {
       else if(input$fplot == "Drift Forecast"){
         fcdrf <- rwf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         return(fcdrf)
-      }  
+      } 
+      else if(input$fplot == "Armia"){
+        aadata <- auto.arima(PURCHASE_ORDER_CANCELATION_QUANTITIES)
+        aaforecast <- forecast(aadata(), h = input$forecast_days)
+        return(aaforecast)
+      } 
       
     }
   })
   
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   # ***********************************************************************************#
   # Dataset view
@@ -686,26 +684,7 @@ shinyServer(function(input, output,session) {
   })
   
   
-  # ***********************************************************************************#
-  # Testing
-  # Testing
-  # ***********************************************************************************# 
-  output$MyPlot <- renderPlot({
-    PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
-    fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
-    autoplot(fcsnv)
-    
-  })
-  
-  output$MyTable <- renderTable({
-    autoarima1 <- auto.arima(ts_Purchase_Cancelation())
-    forecast1 <- forecast(autoarima1, h = input$forecast_days)
-    return(forecast1)
-    
-  })
-  
-  
-  
+
   # ***********************************************************************************#
   # Dynamically Render the Presentation Layer Tabs After Data Upload
   # ***********************************************************************************#
@@ -715,7 +694,7 @@ shinyServer(function(input, output,session) {
     else
       tabsetPanel(
         #Forecat Tab
-        tabPanel(h4("Forecast"),
+        tabPanel(("Forecast"),
                  column(6,h4("Forecast Plot"), plotOutput("forecast_view"),
                         selectInput(
                           "fplot",
@@ -751,7 +730,7 @@ shinyServer(function(input, output,session) {
                  selectInput("accuracy_item", "check accuracy for :",
                              choices =  c(
                                "Sales" = "sales",
-                               "Sales Refund" = "sales_refund",
+                               "Sales Returns" = "sales_refund",
                                "Purchases" = "purchases",
                                "Cancelled POs" = "purchase_cancelation", selected = NULL)),
                  
