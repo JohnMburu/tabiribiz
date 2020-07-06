@@ -14,10 +14,9 @@ library(shinythemes)
 shinyUI(fluidPage(
     theme = shinytheme("yeti"),
     tags$div(class="Header",style="font-family: Montserrat;",
-             tags$h2("TABIRI - Sales & Purchase Forecasting")),
+             tags$h2("TABIRI - Demand and Supply Forecasting")),
     sidebarLayout(
         sidebarPanel(
-            #tags$a (href="/tabiriApp/data/template.csv", "Download Template here!"),
             downloadButton("downloadData", "Download Dataset Template"),
                         fileInput('file1', 'Choose file to upload',
                       accept = c(
@@ -30,9 +29,6 @@ shinyUI(fluidPage(
                          choices = c(All = "all",
                                      Head = "head"),
                          selected = "all"),
-            
-            tags$hr(),
-            br(),
             radioButtons(inputId = 'sep', label = 'Separator', choices = c(Comma=',',Semicolon=';',Tab='\t', Space=''), selected = ','),
             
             tags$hr(),
