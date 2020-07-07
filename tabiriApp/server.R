@@ -148,7 +148,7 @@ shinyServer(function(input, output,session) {
   # Summary Section 
   # Display Forecasting accuracy
   # ***********************************************************************************#
-  #"seasonal naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast"
+  #"seasonal naive","Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast"
   output$summary <- renderPrint({
     #data Prep
         f_ts_Sales <- ts_Sales()
@@ -204,7 +204,7 @@ shinyServer(function(input, output,session) {
         }
         
         #Exponential smoothing accuracy
-        else if (input$f_accuracy=='Simple Expotential Smoothing'){
+        else if (input$f_accuracy=='Simple Exponential Smoothing'){
           
           if (input$accuracy_item=='sales'){
             fcses <- ses(f_ts_Sales, h = input$forecast_days_acc)
@@ -460,7 +460,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
         autoplot(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
         autoplot(fcses)
       }   
@@ -486,7 +486,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcses)
       }
@@ -511,7 +511,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(PURCHASE_QUANTITIES, h = input$forecast_days)
         autoplot(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(PURCHASE_QUANTITIES, h = input$forecast_days)
         autoplot(fcses)
       } 
@@ -536,7 +536,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         autoplot(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         autoplot(fcses)
       }
@@ -568,7 +568,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
         return(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(SALES_QUANTITIES, h = input$forecast_days)
         return(fcses)
       }   
@@ -594,7 +594,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         return(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         return(fcses)
       }
@@ -619,7 +619,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(PURCHASE_QUANTITIES, h = input$forecast_days)
         return(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(PURCHASE_QUANTITIES, h = input$forecast_days)
         return(fcses)
       } 
@@ -644,7 +644,7 @@ shinyServer(function(input, output,session) {
         fcnv <- naive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         return(fcnv)
       }
-      else if(input$fplot == "Simple Expotential Smoothing"){
+      else if(input$fplot == "Simple Exponential Smoothing"){
         fcses <- ses(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         return(fcses)
       }
@@ -699,16 +699,25 @@ shinyServer(function(input, output,session) {
                         selectInput(
                           "fplot",
                           "Chose a Forecast algorithm:",
-                          c("Seasonal Naive","Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast")),
+                          c("Seasonal Naive","Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast")),
                         # SLIDER. NUMBER OF DAYS TO FORECAST
                         sliderInput("forecast_days",
                                     "Number of Days to Forecast:",
                                     value = 14,
                                     min = 2,
-                                    max = 31)
+                                    max = 31),
+                        tags$hr(),
+                        helpText (h5("Algorithyms definitions: ")),
+                        
+                        helpText("Seasonal Naive: A similar method is useful for highly seasonal data. In this case, we set each forecast to be equal to the last observed value from the same season of the year (e.g., the same month of the previous year)"),
+                        helpText("Naive: Estimating technique in which the last period's actuals are used as this period's forecast, without adjusting them or attempting to establish causal factors"),
+                        helpText("Simple Exponential Smoothing: Exponential smoothing is a rule of thumb technique for smoothing time series data using the exponential window function"),
+                        helpText("Mean Average Forecast: Simple Moving Average is a method of time series smoothing and is actually a very basic forecasting technique. It does not need estimation of parameters, but rather is based on order selection"),
+                        helpText("Drift Forecast: A variation on the naïve method is to allow the forecasts to increase or decrease over time, where the amount of change over time (called the drift) is set to be the average change seen in the historical data. Thus the forecast for time T +h is given by"),
                  ),
                  column(6, h4("Forecast Accuracy"),tableOutput("forecast_accuracy")
-                 )
+                
+                )
         ),
         
         
@@ -724,7 +733,7 @@ shinyServer(function(input, output,session) {
                  selectInput(
                    "f_accuracy",
                    "Select a Forecast algorithm:",
-                   c("Naive","Seasonal Naive","Simple Expotential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
+                   c("Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
                  
                  
                  selectInput("accuracy_item", "check accuracy for :",
@@ -741,6 +750,7 @@ shinyServer(function(input, output,session) {
                              min = 2,
                              max = 31)                        
                  ),
+       
         tabPanel("Dataset",dataTableOutput("data_set")),
         
         tabPanel("Holidays", dataTableOutput("holidays") )      
