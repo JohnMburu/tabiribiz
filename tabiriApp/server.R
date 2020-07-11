@@ -368,7 +368,7 @@ shinyServer(function(input, output,session) {
       }
       else if(input$plot == 'Regression Line'){
           ggplot(data(), aes(x = Date, y = Sales_Refund)) + 
-          geom_smooth(aes(color = "Sales"), size = 1, method = "loess") +
+          geom_smooth(aes(color = "Sales Refund"), size = 1, method = "loess") +
           theme_minimal()
       }
       
@@ -402,7 +402,7 @@ shinyServer(function(input, output,session) {
       }
       else if(input$plot == 'Regression Line'){
           ggplot(data(), aes(x = Date, y = Purchases)) + 
-          geom_smooth(aes(color = "Sales"), size = 1, method = "loess") +
+          geom_smooth(aes(color = "Purchases"), size = 1, method = "loess") +
           theme_minimal()
       }
       
@@ -435,7 +435,7 @@ shinyServer(function(input, output,session) {
       }
       else if(input$plot == 'Regression Line'){
           ggplot(data(), aes(x = Date, y = Purchase_Cancelation)) + 
-          geom_smooth(aes(color = "Sales"), size = 1, method = "loess") +
+          geom_smooth(aes(color = "Purchase Cancelation"), size = 1, method = "loess") +
           theme_minimal()
       }
     }
@@ -722,7 +722,7 @@ shinyServer(function(input, output,session) {
         
         
         # Graph Tab
-        tabPanel("Graphs",plotOutput("graphs_view"),
+        tabPanel("Analysis",plotOutput("graphs_view"),
                  selectInput(
                    "plot",
                    "Chose your desired plot type:",
