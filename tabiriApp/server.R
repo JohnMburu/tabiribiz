@@ -770,7 +770,7 @@ shinyServer(function(input, output,session) {
                         selectInput(
                           "fplot",
                           "Chose a Forecast algorithm:",
-                          c("Autoregressive integrated moving average (ARIMA)","Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast")),
+                          c("Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Autoregressive integrated moving average (ARIMA)")),
                         # SLIDER. NUMBER OF DAYS TO FORECAST
                         sliderInput("forecast_days",
                                     "Number of Days to Forecast:",
@@ -804,7 +804,7 @@ shinyServer(function(input, output,session) {
                  selectInput(
                    "f_accuracy",
                    "Select a Forecast algorithm:",
-                   c("Autoregressive integrated moving average (ARIMA)","Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
+                   c("Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Autoregressive integrated moving average (ARIMA)","Summary")),
                  
                  
                  selectInput("accuracy_item", "check accuracy for :",
