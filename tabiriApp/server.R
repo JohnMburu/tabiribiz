@@ -156,6 +156,9 @@ shinyServer(function(input, output,session) {
         f_ts_Purchases<- ts_Purchases()
         f_ts_Purchase_Cancelation <- ts_Purchase_Cancelation()
         
+        
+        
+        
         #Seasonal Naive Accuracy
         if (input$f_accuracy=='Seasonal Naive'){
           if (input$accuracy_item=='sales'){
@@ -277,11 +280,46 @@ shinyServer(function(input, output,session) {
           
           
         }
+        #Autoregressive integrated moving average (ARIMA) Accuracy
+        
+        else if (input$f_accuracy=='Autoregressive integrated moving average (ARIMA)'){
+          autoarimaSales <- auto.arima(ts_Sales())
+          autoarimaRefunds <- auto.arima(ts_Sales_Refund())
+          autoarimaPurchases <- auto.arima(ts_Purchases())
+          autoarimaPurchaseCancelation <- auto.arima(ts_Purchase_Cancelation())
+          
+          if (input$accuracy_item=='sales'){
+            fcarima <- forecast(autoarimaSales, h = input$forecast_days)
+            autoplot(fcarima)
+            
+          }
+          else if (input$accuracy_item=='sales_refund'){
+            fcarima <- forecast(autoarimaRefunds, h = input$forecast_days_acc)
+            accuracy(fcarima)
+          }
+          
+          else if (input$accuracy_item=='purchases'){
+            fcarima <- forecast(autoarimaPurchases, h = input$forecast_days_acc)
+            accuracy(fcarima)
+          }
+          else if (input$accuracy_item=='purchase_cancelation'){
+            fcarima <- forecast(autoarimaPurchaseCancelation, h = input$forecast_days_acc)
+            accuracy(fcarima)
+          }
+          
+          
+        }        
+        
+        
+        
+        
+        
+        #Summary
         else if (input$f_accuracy=='Summary'){
           
           
           
-          if (input$accuracy_item=='sales'){
+      if (input$accuracy_item=='sales'){
             summary(f_ts_Sales)
             
           }
@@ -451,10 +489,10 @@ shinyServer(function(input, output,session) {
     # Sales Forecasting
     if (input$forecast_item == 'sales'){
       SALES_QUANTITIES <- ts_Sales()
+      autoarima1 <- auto.arima(ts_Sales())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
         autoplot(fcsnv)
-       #return(fcsnv)
       }
       else if(input$fplot=='Naive'){
         fcnv <- naive(SALES_QUANTITIES, h = input$forecast_days)
@@ -471,6 +509,10 @@ shinyServer(function(input, output,session) {
       else if(input$fplot == "Drift Forecast"){
         fcdrf <- rwf(SALES_QUANTITIES, h = input$forecast_days)
         autoplot(fcdrf)
+      } 
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        autoplot(fcarima)
       } 
  
     }
@@ -478,6 +520,7 @@ shinyServer(function(input, output,session) {
     # Sales Refund Forecasting
     else if (input$forecast_item == 'sales_refund'){
       SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
+      autoarima1 <- auto.arima(ts_Sales_Refund())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
@@ -498,11 +541,16 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         autoplot(fcdrf)
       }  
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        autoplot(fcarima)
+      } 
     }
     
     # Purchase Forecasting
     else if (input$forecast_item == 'purchases'){
       PURCHASE_QUANTITIES <- ts_Purchases()
+      autoarima1 <- auto.arima(ts_Purchases())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
@@ -523,11 +571,16 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(PURCHASE_QUANTITIES, h = input$forecast_days)
         autoplot(fcdrf)
       } 
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        autoplot(fcarima)
+      } 
       
     }
     # Purchase Forecasting
     else if (input$forecast_item == 'purchase_cancelation'){
       PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
+      autoarima1 <- auto.arima(ts_Purchase_Cancelation())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         autoplot(fcsnv)
@@ -548,18 +601,23 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         autoplot(fcdrf)
       }  
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        autoplot(fcarima)
+      } 
       
     }
   })
   # ***********************************************************************************#
   # Forecasting
   # Logic for Sales, Sales Refund, Purchases and Purchase Refunds
-  # Accuracy Logic 
+  # Plot forecasting Data
   # ***********************************************************************************#
   output$forecast_accuracy <- renderTable({
     # Sales Forecasting
     if (input$forecast_item == 'sales'){
       SALES_QUANTITIES <- ts_Sales()
+      autoarima1 <- auto.arima(ts_Sales())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_QUANTITIES, h = input$forecast_days, format = "%d-%b-%y")
         return(fcsnv)
@@ -580,12 +638,17 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(SALES_QUANTITIES, h = input$forecast_days)
         return(fcdrf)
       } 
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        return(fcarima)
+      } 
       
     }
     
     # Sales Refund Forecasting
     else if (input$forecast_item == 'sales_refund'){
       SALES_REFUND_QUANTITIES <- ts_Sales_Refund()
+      autoarima1 <- auto.arima(ts_Sales_Refund())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         return(fcsnv)
@@ -605,12 +668,17 @@ shinyServer(function(input, output,session) {
       else if(input$fplot == "Drift Forecast"){
         fcdrf <- rwf(SALES_REFUND_QUANTITIES, h = input$forecast_days)
         return(fcdrf)
-      }  
+      }
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        return(fcarima)
+      } 
     }
     
     # Purchase Forecasting
     else if (input$forecast_item == 'purchases'){
       PURCHASE_QUANTITIES <- ts_Purchases()
+      autoarima1 <- auto.arima(ts_Purchases())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_QUANTITIES, h = input$forecast_days)
         return(fcsnv)
@@ -631,11 +699,16 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(PURCHASE_QUANTITIES, h = input$forecast_days)
         return(fcdrf)
       } 
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        return(fcarima)
+      } 
       
     }
     # Purchase Forecasting
     else if (input$forecast_item == 'purchase_cancelation'){
       PURCHASE_ORDER_CANCELATION_QUANTITIES <- ts_Purchase_Cancelation()
+      autoarima1 <- auto.arima(ts_Purchase_Cancelation())
       if (input$fplot == 'Seasonal Naive'){
         fcsnv <- snaive(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         return(fcsnv)
@@ -656,12 +729,10 @@ shinyServer(function(input, output,session) {
         fcdrf <- rwf(PURCHASE_ORDER_CANCELATION_QUANTITIES, h = input$forecast_days)
         return(fcdrf)
       } 
-      else if(input$fplot == "Armia"){
-        aadata <- auto.arima(PURCHASE_ORDER_CANCELATION_QUANTITIES)
-        aaforecast <- forecast(aadata(), h = input$forecast_days)
-        return(aaforecast)
+      else if(input$fplot == "Autoregressive integrated moving average (ARIMA)"){
+        fcarima <- forecast(autoarima1, h = input$forecast_days)
+        return(fcarima)
       } 
-      
     }
   })
   
@@ -699,7 +770,7 @@ shinyServer(function(input, output,session) {
                         selectInput(
                           "fplot",
                           "Chose a Forecast algorithm:",
-                          c("Seasonal Naive","Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast")),
+                          c("Autoregressive integrated moving average (ARIMA)","Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast")),
                         # SLIDER. NUMBER OF DAYS TO FORECAST
                         sliderInput("forecast_days",
                                     "Number of Days to Forecast:",
@@ -715,7 +786,7 @@ shinyServer(function(input, output,session) {
                         helpText("Mean Average Forecast: Simple Moving Average is a method of time series smoothing and is actually a very basic forecasting technique. It does not need estimation of parameters, but rather is based on order selection"),
                         helpText("Drift Forecast: A variation on the naïve method is to allow the forecasts to increase or decrease over time, where the amount of change over time (called the drift) is set to be the average change seen in the historical data. Thus the forecast for time T +h is given by"),
                  ),
-                 column(6, h4("Forecast Accuracy"),tableOutput("forecast_accuracy")
+                 column(6, h4("Forecast Data"),tableOutput("forecast_accuracy")
                 
                 )
         ),
@@ -733,7 +804,7 @@ shinyServer(function(input, output,session) {
                  selectInput(
                    "f_accuracy",
                    "Select a Forecast algorithm:",
-                   c("Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
+                   c("Autoregressive integrated moving average (ARIMA)","Naive","Seasonal Naive","Simple Exponential Smoothing","Mean Average Forecast","Drift Forecast","Summary")),
                  
                  
                  selectInput("accuracy_item", "check accuracy for :",
