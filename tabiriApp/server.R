@@ -761,7 +761,15 @@ shinyServer(function(input, output,session) {
   # ***********************************************************************************#
   output$tb <- renderUI({
     if(is.null(mydata()))
-      h5(tags$img(src='tabiri.png', heigth=900, width=900))
+      h5(tags$img(src='tabiri.png', heigth=600, width=600),
+         tags$hr(),
+         h5('How to use Tabiri - Check out The Documentation at https://johnmburu.github.io/tabiribiz/')
+
+         
+         )
+    
+    
+    
     else
       tabsetPanel(
         #Forecat Tab
@@ -781,9 +789,13 @@ shinyServer(function(input, output,session) {
                         helpText (h5("Algorithyms definitions: ")),
                         
                         helpText("Seasonal Naive: A similar method is useful for highly seasonal data. In this case, we set each forecast to be equal to the last observed value from the same season of the year (e.g., the same month of the previous year)"),
+                        tags$hr(),
                         helpText("Naive: Estimating technique in which the last period's actuals are used as this period's forecast, without adjusting them or attempting to establish causal factors"),
+                        tags$hr(),
                         helpText("Simple Exponential Smoothing: Exponential smoothing is a rule of thumb technique for smoothing time series data using the exponential window function"),
+                        tags$hr(),
                         helpText("Mean Average Forecast: Simple Moving Average is a method of time series smoothing and is actually a very basic forecasting technique. It does not need estimation of parameters, but rather is based on order selection"),
+                        tags$hr(),
                         helpText("Drift Forecast: A variation on the naïve method is to allow the forecasts to increase or decrease over time, where the amount of change over time (called the drift) is set to be the average change seen in the historical data. Thus the forecast for time T +h is given by"),
                  ),
                  column(6, h4("Forecast Data"),tableOutput("forecast_accuracy")

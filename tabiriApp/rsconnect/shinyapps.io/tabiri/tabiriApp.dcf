@@ -5,8 +5,8 @@ account: tabiri
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2381892
-bundleId: 3445204
+bundleId: 3533593
 url: https://tabiri.shinyapps.io/tabiriApp/
-when: 1595927270.70471
+when: 1597837023.96161
 asMultiple: FALSE
 asStatic: FALSE
