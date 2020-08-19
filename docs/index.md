@@ -13,15 +13,42 @@
 - Step 6. Select Desired Forecast Attribute e.g Sales, Sales Refund, Purchases, Purchase Cancelations
 
 ### Data Preparation  
-Field                 | Description                                                                                         | Example Data
------------------------------------------------------------------------------------------------------------------------------------------------
-Custom_Category	      | This can be categorization of the business or products.                             | Product Names, Product Codes, Store Names, Sales person Names
-Date                  |	This records when the sales, refunds, purchases and purchase occurred.              | 4-Apr-20
-Sales	                | Captures complete Sales order (not individualproducts within the sales order).      | Number Value
-Sales_Refund	        | An adjustment to sales that arises from actual return by a customer of merchandise. | Number Value
-Purchases	            | Purchases by the SME from its supplier.                                             | Number Value
-Purchase_Cancelation  |	Total returns of purchased products back to SMEs suppliers                          | Number Value
-Location	            | The Location from which business operate.                                           | Rural Area, Urban Area, or Rural and Urban Area
-Service	              | The type of undertaking the SME carries out.                                        | Merchandising, Service, Manufacturing and Hybrid Business
-SME_size              |	Employee count.                                                                     | A Number between 1 and 100
-Sector                | Global Industry Classification Standard.                                            | [GICS Classification](https://www.spglobal.com/marketintelligence/en/documents/112727-gics-mapbook_2018_v3_letter_digitalspreads.pdf)
+- Custom_Category	      
+  This can be categorization of the business or products.                             
+  Example: Product Names, Product Codes, Store Names, Sales person Names
+  
+- Date   
+  This records when the sales, refunds, purchases and purchase occurred.              
+  Example: 4-Apr-20
+  
+- Sales	               
+  Captures complete Sales order (not individualproducts within the sales order).      
+  Example: Number Value, 33
+  
+- Sales_Refund	        
+  An adjustment to sales that arises from actual return by a customer of merchandise. 
+  Example: Number Value, 33
+  
+- Purchases	            
+  Purchases by the SME from its supplier.                                             
+  Example: Number Value, 33
+  
+- Purchase_Cancelation  
+  Total returns of purchased products back to SMEs suppliers                          
+  Example: Number Value, 33
+  
+- Location	            
+  The Location from which business operate.                                           
+  Example: Rural Area, Urban Area, or Rural and Urban Area
+  
+- Service	              
+  The type of undertaking the SME carries out.                                        
+  Example: Merchandising, Service, Manufacturing and Hybrid Business
+  
+- SME_size              
+  Employee count.                                                                     
+  Example: A Number between 1 and 100
+  
+- Sector                
+  Global Industry Classification Standard.                                            
+  Example: Energy, Materials, Industrials, Consumer Discretionary, Consumer Staples, Health Care, Financials, Information Technology, Communications services and Utilities. [GICS Classification](https://www.spglobal.com/marketintelligence/en/documents/112727-gics-mapbook_2018_v3_letter_digitalspreads.pdf)
