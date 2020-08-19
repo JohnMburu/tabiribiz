@@ -1,37 +1,27 @@
-## Welcome to GitHub Pages
+## Welcome to Tabiri App
+### Forecasting Demand and Supply for SMall and Medium enterprices in Kenya
 
-You can use the [editor on GitHub](https://github.com/JohnMburu/tabiribiz/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+[Tabiri App](https://tabiri.shinyapps.io/tabiriApp/) is live at the ShinyApps Server
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### How to use the Platform
 
-### Markdown
+- Step 1. Download the Dataset Template
+- Step 2. Clear the Sample Data and provide your Daily Sales and Purchase Qunatities
+- Step 3. Upload your Dataset to the on [Tabiri App] (https://tabiri.shinyapps.io/tabiriApp/)
+- Step 4. Select your Desired Forecast Duration **Currently Limited to a choise between 2-30 days**
+- Step 5. Select a Forecasting algorithm from the drop down
+- Step 6. Select Desired Forecast Attribute e.g Sales, Sales Refund, Purchases, Purchase Cancelations
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/JohnMburu/tabiribiz/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+### Data Preparation  
+Field                 | Description                                                                                         | Example Data
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Custom_Category	      | This can be categorization of the business or products.                             | Product Names, Product Codes, Store Names, Sales person Names
+Date                  |	This records when the sales, refunds, purchases and purchase occurred.              | 4-Apr-20
+Sales	                | Captures complete Sales order (not individualproducts within the sales order).      | Number Value
+Sales_Refund	        | An adjustment to sales that arises from actual return by a customer of merchandise. | Number Value
+Purchases	            | Purchases by the SME from its supplier.                                             | Number Value
+Purchase_Cancelation  |	Total returns of purchased products back to SMEs suppliers                          | Number Value
+Location	            | The Location from which business operate.                                           | Rural Area, Urban Area, or Rural and Urban Area
+Service	              | The type of undertaking the SME carries out.                                        | Merchandising, Service, Manufacturing and Hybrid Business
+SME_size              |	Employee count.                                                                     | A Number between 1 and 100
+Sector                | Global Industry Classification Standard.                                            | [GICS Classification](https://www.spglobal.com/marketintelligence/en/documents/112727-gics-mapbook_2018_v3_letter_digitalspreads.pdf)
