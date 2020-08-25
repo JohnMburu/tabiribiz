@@ -13,6 +13,19 @@ library(shinythemes)
 # ***********************************************************************************#
 shinyUI(fluidPage(
     theme = shinytheme("yeti"),
+    tags$head(HTML(
+        "<script async src='https://www.googletagmanager.com/gtag/js?id=UA-175900486-1'></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'UA-175900486-1');
+        </script>"
+    )),
+    
+
+    
     tags$div(class="Header",style="font-family: Montserrat;",
              tags$h2("TABIRI - Demand and Supply Forecasting")),
     sidebarLayout(

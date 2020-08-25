@@ -763,7 +763,7 @@ shinyServer(function(input, output,session) {
     if(is.null(mydata()))
       h5(tags$img(src='tabiri.png', heigth=600, width=600),
          tags$hr(),
-         h5('How to use Tabiri - Check out The Documentation at https://johnmburu.github.io/tabiribiz/')
+         h5('How to use Tabiri - Check out our ', a("Documentation", href="https://johnmburu.github.io/tabiribiz/"))
 
          
          )
